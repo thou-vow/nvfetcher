@@ -439,6 +439,10 @@ data NixFetcher (k :: FetchStatus)
       { _furl :: Text,
         _sha256 :: FetchResult Checksum k
       }
+  | FetchZip
+      { _furl :: Text,
+        _sha256 :: FetchResult Checksum k
+      }
   | FetchDocker
       { _imageName :: Text,
         _imageTag :: Text,
@@ -515,6 +519,12 @@ instance A.ToJSON (NixFetcher Fetched) where
         "sha256" A..= _sha256,
         "type" A..= A.String "tarball"
       ]
+  toJSON FetchZip {..} =
+    A.object
+      [ "url" A..= _furl,
+        "sha256" A..= _sha256,
+        "type" A..= A.String "zip"
+      ]
   toJSON FetchDocker {..} =
     A.object
       [ "imageName" A..= _imageName,
@@ -571,6 +581,8 @@ instance Pretty (NixFetcher k) where
         )
   pretty FetchTarball {..} =
     "FetchTarball" <> colon <+> pretty _furl
+  pretty FetchZip {..} =
+    "FetchZip" <> colon <+> pretty _furl
   pretty FetchDocker {..} =
     "FetchDocker"
       <> line

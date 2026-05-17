@@ -87,6 +87,7 @@ fakeFetch = \case
   FetchGitHub {..} -> FetchGitHub {_sha256 = fakeSha256, ..}
   FetchUrl {..} -> FetchUrl {_sha256 = fakeSha256, ..}
   FetchTarball {..} -> FetchTarball {_sha256 = fakeSha256, ..}
+  FetchZip {..} -> FetchZip {_sha256 = fakeSha256, ..}
   FetchDocker {..} -> FetchDocker {_sha256 = fakeSha256, _imageDigest = fakeDigest, ..}
   where
     fakeSha256 = Checksum "0000000000000000000000000000000000000000000000000000000000000000"

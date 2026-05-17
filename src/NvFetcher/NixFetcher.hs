@@ -19,13 +19,14 @@
 --
 -- 'NixFetcher' is used to describe how to fetch package sources.
 --
--- There are five types of fetchers overall:
+-- There are six types of fetchers overall:
 --
 -- 1. 'FetchGit' -- nix-prefetch-git
 -- 2. 'FetchGitHub' -- nix-prefetch-git/nix-prefetch-url
 -- 3. 'FetchUrl' -- nix-prefetch-url
 -- 4. 'FetchTarball' -- nix-prefetch-url
--- 5. 'FetchDocker' -- nix-prefetch-docker
+-- 5. 'FetchZip' -- nix-prefetch-url
+-- 6. 'FetchDocker' -- nix-prefetch-docker
 --
 -- As you can see the type signature of 'prefetch':
 -- a fetcher will be filled with the fetch result (hash) after the prefetch.
@@ -52,6 +53,7 @@ module NvFetcher.NixFetcher
     openVsxFetcher,
     vscodeMarketplaceFetcher,
     tarballFetcher,
+    zipFetcher,
   )
 where
 
@@ -135,6 +137,9 @@ runFetcher = \case
   FetchTarball {..} -> do
     result <- runNixPrefetchUrl _furl True mempty
     pure FetchTarball {_sha256 = result, ..}
+  FetchZip {..} -> do
+    result <- runNixPrefetchUrl _furl True mempty
+    pure FetchZip {_sha256 = result, ..}
   FetchDocker {..} -> do
     (CmdTime t, Stdout out, CmdLine c) <-
       quietly $
@@ -261,3 +266,7 @@ vscodeMarketplaceFetcher (publisher, extName) (coerce -> ver) =
 -- | Create a fetcher from url, using fetchTarball
 tarballFetcher :: Text -> NixFetcher Fresh
 tarballFetcher url = FetchTarball url ()
+
+-- | Create a fetcher from url, using fetchzip
+zipFetcher :: Text -> NixFetcher Fresh
+zipFetcher url = FetchZip url ()

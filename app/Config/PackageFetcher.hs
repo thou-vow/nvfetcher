@@ -30,6 +30,7 @@ fetcherDecoder =
       gitDecoder,
       urlDecoder,
       tarballDecoder,
+      zipDecoder,
       dockerDecoder
     ]
 
@@ -42,6 +43,7 @@ fetcherKeys =
     "git",
     "url",
     "tarball",
+    "zip",
     "docker"
   ]
 
@@ -129,6 +131,13 @@ tarballDecoder :: Decoder PackageFetcher
 tarballDecoder = do
   url <- getFields ["fetch", "tarball"]
   pure $ \(coerce -> v) -> tarballFetcher $ T.replace "$ver" v url
+
+--------------------------------------------------------------------------------
+
+zipDecoder :: Decoder PackageFetcher
+zipDecoder = do
+  url <- getFields ["fetch", "zip"]
+  pure $ \(coerce -> v) -> zipFetcher $ T.replace "$ver" v url
 
 --------------------------------------------------------------------------------
 

@@ -133,6 +133,13 @@ nixFetcher = \case
             sha256 = $sha256;
           }
     |]
+  (FetchZip (quote -> url) (coerce quote -> sha256)) ->
+    [trimming|
+          fetchzip {
+            url = $url;
+            sha256 = $sha256;
+          }
+    |]
   FetchDocker
     { _imageName = quote . toNixExpr -> imageName,
       _imageTag = quote . toNixExpr -> imageTag,
